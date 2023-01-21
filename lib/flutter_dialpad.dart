@@ -1,4 +1,5 @@
 library flutter_dialpad;
+
 export 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_dtmf/dtmf.dart';
 
 class DialPad extends StatefulWidget {
-  final MaskedTextController? controller;
+  final MaskedTextController controller;
   final ValueSetter<String>? makeCall;
   final ValueSetter<String>? keyPressed;
   final bool? hideDialButton;
@@ -19,14 +20,12 @@ class DialPad extends StatefulWidget {
   final Color? backspaceButtonIconColor;
   final Color? dialOutputTextColor;
   // outputMask is the mask applied to the output text. Defaults to (000) 000-0000
-  final String? outputMask;
   final bool? enableDtmf;
 
   DialPad(
       {this.makeCall,
       this.keyPressed,
       this.hideDialButton,
-      this.outputMask,
       this.buttonColor,
       this.buttonTextColor,
       this.dialButtonColor,
@@ -34,7 +33,7 @@ class DialPad extends StatefulWidget {
       this.dialButtonIcon,
       this.dialOutputTextColor,
       this.backspaceButtonIconColor,
-      this.controller,
+      required this.controller,
       this.enableDtmf});
 
   @override
@@ -42,7 +41,6 @@ class DialPad extends StatefulWidget {
 }
 
 class _DialPadState extends State<DialPad> {
-  MaskedTextController? textEditingController;
   var _value = "";
   var mainTitle = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "＃"];
   var subTitle = [
@@ -62,14 +60,7 @@ class _DialPadState extends State<DialPad> {
 
   @override
   void initState() {
-    if (widget.controller != null) {
-      textEditingController = widget.controller;
-    } else {
-      textEditingController = MaskedTextController(
-          mask:
-              widget.outputMask != null ? widget.outputMask : '(000) 000-0000');
-    }
-
+    _value = widget.controller.text;
     super.initState();
   }
 
@@ -81,7 +72,7 @@ class _DialPadState extends State<DialPad> {
 
     setState(() {
       _value += value!;
-      textEditingController!.text = _value;
+      widget.controller.text = _value;
     });
   }
 
@@ -134,7 +125,7 @@ class _DialPadState extends State<DialPad> {
                   fontSize: sizeFactor / 2),
               textAlign: TextAlign.center,
               decoration: InputDecoration(border: InputBorder.none),
-              controller: textEditingController,
+              controller: widget.controller,
             ),
           ),
           ..._getDialerButtons(),
@@ -184,7 +175,7 @@ class _DialPadState extends State<DialPad> {
                             if (_value.length > 0) {
                               setState(() {
                                 _value = _value.substring(0, _value.length - 1);
-                                textEditingController!.text = _value;
+                                widget.controller.text = _value;
                               });
                             }
                           },
