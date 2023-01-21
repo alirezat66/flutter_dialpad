@@ -41,7 +41,6 @@ class DialPad extends StatefulWidget {
 }
 
 class _DialPadState extends State<DialPad> {
-  var _value = "";
   var mainTitle = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "＃"];
   var subTitle = [
     "",
@@ -60,9 +59,7 @@ class _DialPadState extends State<DialPad> {
 
   @override
   void initState() {
-    setState(() {
-      _value = widget.controller.text;
-    });
+    setState(() {});
 
     super.initState();
   }
@@ -74,8 +71,7 @@ class _DialPadState extends State<DialPad> {
     if (widget.keyPressed != null) widget.keyPressed!(value!);
 
     setState(() {
-      _value += value!;
-      widget.controller.text = _value;
+      widget.controller.text += value!;
     });
   }
 
@@ -153,7 +149,7 @@ class _DialPadState extends State<DialPad> {
                               ? widget.dialButtonColor!
                               : Colors.green,
                           onTap: (value) {
-                            widget.makeCall!(_value);
+                            widget.makeCall!(widget.controller.text);
                           },
                         ),
                       ),
@@ -166,19 +162,20 @@ class _DialPadState extends State<DialPad> {
                     icon: Icon(
                       Icons.backspace,
                       size: sizeFactor / 2,
-                      color: _value.length > 0
+                      color: widget.controller.text.length > 0
                           ? (widget.backspaceButtonIconColor != null
                               ? widget.backspaceButtonIconColor
                               : Colors.white24)
                           : Colors.white24,
                     ),
-                    onPressed: _value.length == 0
+                    onPressed: widget.controller.text.length == 0
                         ? null
                         : () {
-                            if (_value.length > 0) {
+                            if (widget.controller.text.length > 0) {
                               setState(() {
-                                _value = _value.substring(0, _value.length - 1);
-                                widget.controller.text = _value;
+                                widget.controller.text = widget.controller.text
+                                    .substring(
+                                        0, widget.controller.text.length - 1);
                               });
                             }
                           },
