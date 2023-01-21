@@ -1,11 +1,12 @@
 library flutter_dialpad;
-
+export 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:flutter_dtmf/dtmf.dart';
 
 class DialPad extends StatefulWidget {
+  final MaskedTextController? controller;
   final ValueSetter<String>? makeCall;
   final ValueSetter<String>? keyPressed;
   final bool? hideDialButton;
@@ -33,6 +34,7 @@ class DialPad extends StatefulWidget {
       this.dialButtonIcon,
       this.dialOutputTextColor,
       this.backspaceButtonIconColor,
+      this.controller,
       this.enableDtmf});
 
   @override
@@ -60,8 +62,14 @@ class _DialPadState extends State<DialPad> {
 
   @override
   void initState() {
-    textEditingController = MaskedTextController(
-        mask: widget.outputMask != null ? widget.outputMask : '(000) 000-0000');
+    if (widget.controller != null) {
+      textEditingController = widget.controller;
+    } else {
+      textEditingController = MaskedTextController(
+          mask:
+              widget.outputMask != null ? widget.outputMask : '(000) 000-0000');
+    }
+
     super.initState();
   }
 
@@ -144,8 +152,12 @@ class _DialPadState extends State<DialPad> {
                     ? Container()
                     : Center(
                         child: DialButton(
-                          icon: widget.dialButtonIcon != null ? widget.dialButtonIcon : Icons.phone,
-                          color: widget.dialButtonColor != null ? widget.dialButtonColor! : Colors.green,
+                          icon: widget.dialButtonIcon != null
+                              ? widget.dialButtonIcon
+                              : Icons.phone,
+                          color: widget.dialButtonColor != null
+                              ? widget.dialButtonColor!
+                              : Colors.green,
                           onTap: (value) {
                             widget.makeCall!(_value);
                           },
