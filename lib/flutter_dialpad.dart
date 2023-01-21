@@ -60,7 +60,10 @@ class _DialPadState extends State<DialPad> {
 
   @override
   void initState() {
-    _value = widget.controller.text;
+    setState(() {
+      _value = widget.controller.text;
+    });
+
     super.initState();
   }
 
